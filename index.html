@@ -11,36 +11,56 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="snippet-body" >
+<body class="snippet-body">
     <div class="d-flex justify-content-center align-items-center container px-2">
-       
-        <div class="card">
+        <div class="card" data-amount="100"> <!-- Set price in data-amount -->
             <div class="top d-flex flex-row align-items-center">
                 <h6>STK vanilla push</h6>
             </div>
             <div class="middle">
                 <img src="https://thumbs.dreamstime.com/b/ripe-pineapple-2646596.jpg" width="150px" title="pineapple">
                 <h6 class="mb-0 mr-0">Pineapple green packham</h6>
-                <span>Each-approx 1.2kg</span>
+                <span>Each - approx 1.2kg</span>
             </div>
             <div class="bottom d-flex flex-row justify-content-center">
                 <div class="input-group mb-3">
-                    <span class="input-group-text">+</span>
-                    <input type=" text" class="form-control" value="1">
-                    <span class="input-group-text">-</span>
+                    <span class="input-group-text" onclick="updateQuantity(1)">+</span>
+                    <input id="quantity" type="text" class="form-control" value="1" readonly>
+                    <span class="input-group-text" onclick="updateQuantity(-1)">-</span>
                 </div>
-                <button class="intaSendPayButton" data-amount="100" data-currency="KES">
+                <button class="intaSendPayButton" id="payButton" data-amount="100" data-currency="KES">
                     Pay Now
-                  </button>
-          
+                </button>
             </div>
         </div>
     </div>
 
     <script>
+        // Function to update the quantity and total price
+        function updateQuantity(change) {
+            let quantityInput = document.getElementById('quantity');
+            let currentQuantity = parseInt(quantityInput.value);
+            let newQuantity = currentQuantity + change;
+
+            if (newQuantity > 0) { // Ensure quantity doesn't go below 1
+                quantityInput.value = newQuantity;
+
+                // Get the price from the data-amount attribute on the card
+                let card = document.querySelector('.card');
+                let pricePerPineapple = parseInt(card.getAttribute('data-amount'));
+
+                // Calculate the new total price
+                let totalPrice = newQuantity * pricePerPineapple;
+
+                // Update the payment button's data-amount attribute
+                document.getElementById('payButton').setAttribute('data-amount', totalPrice);
+            }
+        }
+
+        // Initialize IntaSend payment widget
         new window.IntaSend({
             publicAPIKey: "ISPubKey_test_cea3e6f3-737a-48cd-9c2a-304d6b6cbcfc",
-            live: false, //set to true when going live
+            live: false, // Set to true when going live
         })
             .on("COMPLETE", (results) =>
                 console.log("Do something on success", results)

@@ -48,6 +48,7 @@ body{
     margin-bottom: 20px;
     border-radius: 6px;
     border: 1px solid #ccc;
+    cursor: pointer;
 }
 
 .form-control:focus:focus{
